@@ -79,7 +79,7 @@ def save_res(a, b, winner, prob, save_name):
 
     img = cv2AddChineseText(img, country_name[winner] + "(" + winner + ")", (10 + a_img_w + 300, 10 + 50 + a_img_h + winner_img_h // 2 + 10), (255, 255, 255), 30)
 
-    cv2.imwrite(save_name, img)
+    cv2.imwrite("img/"+save_name, img)
 
 def save_res_draw(a, b, winner, prob, save_name):
     img = np.zeros((520, 850, 3), np.uint8)
@@ -131,7 +131,7 @@ def save_res_draw(a, b, winner, prob, save_name):
 
     # img = cv2AddChineseText(img, country_name[winner] + "(" + winner + ")", (10 + a_img_w + 300, 10 + 50 + a_img_h + winner_img_h // 2 + 10), (255, 255, 255), 30)
 
-    cv2.imwrite(save_name, img)
+    cv2.imwrite("img/" + save_name, img)
 
 if __name__ == "__main__":
     save_res_draw("Switzerland", "Cameroon", "Switzerland", 0.62, "tmp.png")

@@ -39,6 +39,8 @@ print(away_team)
 team_stats = home_team.append(away_team)#.sort_values("date")
 #this column will be used to calculate features for simulation
 team_stats_raw = team_stats.copy()
+# 将数据保存到 CSV 文件中
+team_stats_raw.to_csv('kaggle/team_stats_raw.csv', index=False, encoding='utf-8')
 
 # 现在，我们有了一个数据库，可以创建预测功能。他们将是：
 # 球队在世界杯周期的平均进球数。

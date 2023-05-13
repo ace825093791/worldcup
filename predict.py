@@ -422,10 +422,10 @@ for idx, teams in enumerate(matches):
         
     if draw == False:
         print("小组 %s - %s vs. %s: %s 获胜，胜率： %.2f"%(teams[0], country_name[teams[1]] + "(" + teams[1] + ")", country_name[teams[2]] + "(" + teams[2] + ")", country_name[winner] + "(" + winner + ")", winner_proba))
-        save_res(teams[1], teams[2], winner, winner_proba, "{}-{}.png".format(teams[0], idx))
+        #save_res(teams[1], teams[2], winner, winner_proba, "{}-{}.png".format(teams[0], idx))
     else:
         print("小组 %s - %s vs. %s: Draw"%(teams[0], teams[1], teams[2]))
-        save_res_draw(teams[1], teams[2], teams[2], 0.5, "{}-{}.png".format(teams[0], idx))
+        #save_res_draw(teams[1], teams[2], teams[2], 0.5, "img/{}-{}.png".format(teams[0], idx))
     last_group =  teams[0]
 
 print("\n")
@@ -494,12 +494,12 @@ for p in playoffs.keys():
             if team_1_prob < team_2_prob:
                 print("%s vs. %s: %s 晋级，概率： %.2f"%(country_name[home] + "(" + home + ")", country_name[away] + "(" + away + ")", country_name[away] + "(" + away + ")", team_2_prob))
 
-                save_res(home, away, away, team_2_prob, "%s.png" % str(time.time()).replace(".", "_"))
+                # save_res(home, away, away, team_2_prob, "%s.png" % str(time.time()).replace(".", "_"))
                 
                 next_rounds.append(away)
             else:
                 print("%s vs. %s: %s 晋级，概率： %.2f"%(country_name[home] + "(" + home + ")", country_name[away] + "(" + away + ")", country_name[home] + "(" + home + ")", team_1_prob))
-                save_res(home, away, home, team_1_prob, "%s.png" % str(time.time()).replace(".", "_"))
+                # save_res(home, away, home, team_1_prob, "%s.png" % str(time.time()).replace(".", "_"))
                 next_rounds.append(home)
             
             game.append([team_1_prob, team_2_prob])
@@ -534,12 +534,12 @@ for p in playoffs.keys():
             if team_1_prob < team_2_prob:
                 print("%s vs. %s: %s 晋级，概率： %.2f"%(country_name[home] + "(" + home + ")", country_name[away] + "(" + away + ")", country_name[away] + "(" + away + ")", team_2_prob))
 
-                save_res(home, away, away, team_2_prob, "%s.png" % str(time.time()).replace(".", "_"))
+                # save_res(home, away, away, team_2_prob, "%s.png" % str(time.time()).replace(".", "_"))
 
                 next_rounds.append(away)
             else:
                 print("%s vs. %s: %s 晋级，概率： %.2f"%(country_name[home] + "(" + home + ")", country_name[away] + "(" + away + ")", country_name[home] + "(" + home + ")", team_1_prob))
-                save_res(home, away, home, team_1_prob, "%s.png" % str(time.time()).replace(".", "_"))
+                # save_res(home, away, home, team_1_prob, "%s.png" % str(time.time()).replace(".", "_"))
                 next_rounds.append(home)
             game.append([team_1_prob, team_2_prob])
             playoffs[p][i] = game
