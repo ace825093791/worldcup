@@ -68,20 +68,20 @@ analyze(rf)
 
 #开始比赛仿真
 #第一件事是创造FIFA世界杯比赛。为了做到这一点，我将在维基百科上找到球队和小组赛。
-dfs = pd.read_html(r"https://en.wikipedia.org/wiki/2022_FIFA_World_Cup#Teams")
-for i in range(len(dfs)):
-    df = dfs[i]
-    cols = list(df.columns.values)
-
-    if isinstance(cols[0], Iterable):
-        if any("Tie-breaking criteria" in c for c in cols):
-            start_pos = i + 1
-
-        if any("Match 46" in c for c in cols):
-            end_pos = i + 1
-matches = []
+# dfs = pd.read_html(r"https://en.wikipedia.org/wiki/2022_FIFA_World_Cup#Teams")
+# for i in range(len(dfs)):
+#     df = dfs[i]
+#     cols = list(df.columns.values)
+#
+#     if isinstance(cols[0], Iterable):
+#         if any("Tie-breaking criteria" in c for c in cols):
+#             start_pos = i + 1
+#
+#         if any("Match 46" in c for c in cols):
+#             end_pos = i + 1
+# matches = []
 groups = ["A", "B", "C", "D", "E", "F", "G", "H"]
-group_count = 0
+group_count = 7
 
 #table = {}
 # TABLE -> TEAM, POINTS, WIN PROBS (CRITERIO DE DESEMPATE)
@@ -96,15 +96,63 @@ table = {'A': [['Qatar', 0, []],  ['Ecuador', 0, []],  ['Senegal', 0, []],  ['Ne
          'H': [['Portugal', 0, []],  ['Ghana', 0, []],  ['Uruguay', 0, []],  ['South Korea', 0, []]]}
 
 #for i in range(start_pos + 1, end_pos, 1):
-for i in range(13, 67, 1):
-    if len(dfs[i].columns) == 3:
-        team_1 = dfs[i].columns.values[0]
-        team_2 = dfs[i].columns.values[-1]
-
-        matches.append((groups[group_count], team_1, team_2))
-    else:
-        group_count+=1
-        table[groups[group_count]] = [[a, 0, []] for a in list(dfs[i].iloc[:, 1].values)]
+# for i in range(13, 67, 1):
+#     if len(dfs[i].columns) == 3:
+#         team_1 = dfs[i].columns.values[0]
+#         team_2 = dfs[i].columns.values[-1]
+#
+#         matches.append((groups[group_count], team_1, team_2))
+#     else:
+#         group_count+=1
+#         table[groups[group_count]] = [[a, 0, []] for a in list(dfs[i].iloc[:, 1].values)]
+matches = [('A', 'Qatar', 'Ecuador'),
+ ('A', 'Senegal', 'Netherlands'),
+ ('A', 'Qatar', 'Senegal'),
+ ('A', 'Netherlands', 'Ecuador'),
+ ('A', 'Ecuador', 'Senegal'),
+ ('A', 'Netherlands', 'Qatar'),
+ ('B', 'England', 'Iran'),
+ ('B', 'United States', 'Wales'),
+ ('B', 'Wales', 'Iran'),
+ ('B', 'England', 'United States'),
+ ('B', 'Wales', 'England'),
+ ('B', 'Iran', 'United States'),
+ ('C', 'Argentina', 'Saudi Arabia'),
+ ('C', 'Mexico', 'Poland'),
+ ('C', 'Poland', 'Saudi Arabia'),
+ ('C', 'Argentina', 'Mexico'),
+ ('C', 'Poland', 'Argentina'),
+ ('C', 'Saudi Arabia', 'Mexico'),
+ ('D', 'Denmark', 'Tunisia'),
+ ('D', 'France', 'Australia'),
+ ('D', 'Tunisia', 'Australia'),
+ ('D', 'France', 'Denmark'),
+ ('D', 'Australia', 'Denmark'),
+ ('D', 'Tunisia', 'France'),
+ ('E', 'Germany', 'Japan'),
+ ('E', 'Spain', 'Costa Rica'),
+ ('E', 'Japan', 'Costa Rica'),
+ ('E', 'Spain', 'Germany'),
+ ('E', 'Japan', 'Spain'),
+ ('E', 'Costa Rica', 'Germany'),
+ ('F', 'Morocco', 'Croatia'),
+ ('F', 'Belgium', 'Canada'),
+ ('F', 'Belgium', 'Morocco'),
+ ('F', 'Croatia', 'Canada'),
+ ('F', 'Croatia', 'Belgium'),
+ ('F', 'Canada', 'Morocco'),
+ ('G', 'Switzerland', 'Cameroon'),
+ ('G', 'Brazil', 'Serbia'),
+ ('G', 'Cameroon', 'Serbia'),
+ ('G', 'Brazil', 'Switzerland'),
+ ('G', 'Serbia', 'Switzerland'),
+ ('G', 'Cameroon', 'Brazil'),
+ ('H', 'Uruguay', 'South Korea'),
+ ('H', 'Portugal', 'Ghana'),
+ ('H', 'South Korea', 'Ghana'),
+ ('H', 'Portugal', 'Uruguay'),
+ ('H', 'Ghana', 'Uruguay'),
+ ('H', 'South Korea', 'Portugal')]
 
 print(table)
 #上面，我们还存储了球队在小组中的得分和每场比赛获胜的概率。当两队得分相同时，获胜概率的平均值将作为决胜局。
@@ -332,43 +380,43 @@ for p in playoffs.keys():
             game.append([team_1_prob, team_2_prob])
             playoffs[p][i] = game
             actual_round = p
-
-import networkx as nx
-from networkx.drawing.nx_pydot import graphviz_layout
-
-plt.figure(figsize=(15, 10))
-G = nx.balanced_tree(2, 3)
-
-labels = []
-
-for p in playoffs.keys():
-    for game in playoffs[p]:
-        label = f"{game[0]}({round(game[2][0], 2)}) \n {game[1]}({round(game[2][1], 2)})"
-        labels.append(label)
-
-labels_dict = {}
-labels_rev = list(reversed(labels))
-
-for l in range(len(list(G.nodes))):
-    labels_dict[l] = labels_rev[l]
-
-pos = graphviz_layout(G, prog='twopi')
-labels_pos = {n: (k[0], k[1] - 0.08 * k[1]) for n, k in pos.items()}
-center = pd.DataFrame(pos).mean(axis=1).mean()
-
-nx.draw(G, pos=pos, with_labels=False, node_color=range(15), edge_color="#bbf5bb", width=10, font_weight='bold',
-        cmap=plt.cm.Greens, node_size=5000)
-nx.draw_networkx_labels(G, pos=labels_pos, bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=.5, alpha=1),
-                        labels=labels_dict)
-texts = ["Round \nof 16", "Quarter \n Final", "Semi \n Final", "Final\n"]
-pos_y = pos[0][1] + 55
-for text in reversed(texts):
-    pos_x = center
-    pos_y -= 75
-    plt.text(pos_y, pos_x, text, fontsize=18)
-
-plt.axis('equal')
-plt.show()
+#画球队晋级图
+# import networkx as nx
+# from networkx.drawing.nx_pydot import graphviz_layout
+#
+# plt.figure(figsize=(15, 10))
+# G = nx.balanced_tree(2, 3)
+#
+# labels = []
+#
+# for p in playoffs.keys():
+#     for game in playoffs[p]:
+#         label = f"{game[0]}({round(game[2][0], 2)}) \n {game[1]}({round(game[2][1], 2)})"
+#         labels.append(label)
+#
+# labels_dict = {}
+# labels_rev = list(reversed(labels))
+#
+# for l in range(len(list(G.nodes))):
+#     labels_dict[l] = labels_rev[l]
+#
+# pos = graphviz_layout(G, prog='twopi')
+# labels_pos = {n: (k[0], k[1] - 0.08 * k[1]) for n, k in pos.items()}
+# center = pd.DataFrame(pos).mean(axis=1).mean()
+#
+# nx.draw(G, pos=pos, with_labels=False, node_color=range(15), edge_color="#bbf5bb", width=10, font_weight='bold',
+#         cmap=plt.cm.Greens, node_size=5000)
+# nx.draw_networkx_labels(G, pos=labels_pos, bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=.5, alpha=1),
+#                         labels=labels_dict)
+# texts = ["Round \nof 16", "Quarter \n Final", "Semi \n Final", "Final\n"]
+# pos_y = pos[0][1] + 55
+# for text in reversed(texts):
+#     pos_x = center
+#     pos_y -= 75
+#     plt.text(pos_y, pos_x, text, fontsize=18)
+#
+# plt.axis('equal')
+# plt.show()
 
 #这就是最后的模拟!巴西赢得了第六个冠军!希望我的预测是正确的。
 #分析一下可能出现的麻烦也很好。比利时战胜了德国，最后被葡萄牙击败。阿根廷对荷兰的比赛非常紧张，荷兰的传球优势接近1%。
